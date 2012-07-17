@@ -5,7 +5,8 @@
         [ring.middleware.params])
   (:require (compojure [route :as route])
             (compojure [handler :as handler])
-            (ring.middleware [multipart-params :as mp])))
+            (ring.middleware [multipart-params :as mp])
+            (ring [multipart-mixed-params :as mm])))
 
 (defn render [template]
   (apply str template))
@@ -19,11 +20,12 @@
 
 (defroutes main-routes
   (GET "/" [] (render (upload-page)))
-  (mp/wrap-multipart-params
+  (mm/wrap-multipart-mixed
    (POST "/data" req
-     (upload-file
+     #_(upload-file
       (get (:multipart-params req) "img")
-      (get (:multipart-params req) "name")))))
+      (get (:multipart-params req) "name"))
+     (prn req))))
 
 (def app
   (handler/site main-routes))
