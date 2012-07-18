@@ -14,13 +14,18 @@
 (deftemplate upload-page "pages/add.html" [])
 (deftemplate added "pages/added.html" [])
 
-(defn upload-file [stream])
+(defn upload-file [stream]
+  (prn stream)
+  (spit "test.jpg" stream))
 
 (defroutes main-routes
   (GET "/" [] (render (upload-page)))
   (mm/wrap-multipart-mixed
    (POST "/data" req
-         (upload-file (first (get (:parts (:multiparts req)) "image/jpeg")))
+         (prn req)
+         (prn (first (:multiparts req)))
+         (prn (get (first (:multiparts req)) "image/jpeg"))
+         (upload-file (first (get (first (:multiparts req)) "image/jpeg")))
          (render (added)))))
 
 (def app

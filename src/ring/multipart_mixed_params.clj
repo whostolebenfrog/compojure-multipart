@@ -19,10 +19,14 @@
 (defn- parse-request
   "Parse a mutlipart/mixed request"
   [request]
-  (let [multipart  (MimeMultipart. (ByteArrayDataSource. (:body request) "multipart/mixed"))
-        parts      (group-by #(.getContentType %) (parts-sequence multipart))]
-    {:parts parts
-     :count (.getCount multipart)}))
+  (let [multipart  (MimeMultipart.
+                    (ByteArrayDataSource.
+                     (:body request) "multipart/mixed"))
+        parts      (group-by #(.getContentType %) (parts-sequence multipart))
+        streams    (map (fn [key]
+                          {key (map #(.getInputStream %) (get parts key))})
+                        (keys parts))]
+    (apply concat streams)))
 
 (defn- parse-multipart-mixed
   "Parse multipart/mixed if in the correct format"
