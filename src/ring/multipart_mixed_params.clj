@@ -16,44 +16,29 @@
        (let [part (.getBodyPart multipart n)]
          (lazy-seq (cons part (parts-sequence multipart (inc n))))))))
 
-(defn- file-part?
-  "Is this part a file part"
-  [part]
-  (if-let [content-type (.getContentType part)]
-    (not (or
-          (.startsWith content-type "application/json")
-          (.startsWith content-type "application/xml")
-          (.startsWith content-type "text/plain")))))
-
 (defn- parse-request
   "Parse a mutlipart/mixed request"
-  [request encoding]
+  [request]
   (let [multipart  (MimeMultipart. (ByteArrayDataSource. (:body request) "multipart/mixed"))
-        parts      (group-by file-part? (parts-sequence multipart))]
-    {:parts (map (fn [part]
-                    {:content-type (.getContentType part)
-                     :stream       (.getInputStream part)}) (get parts true))
-     :meta  (map #(slurp (.getInputStream %)) (get parts false))
+        parts      (group-by #(.getContentType %) (parts-sequence multipart))]
+    {:parts parts
      :count (.getCount multipart)}))
 
 (defn- parse-multipart-mixed
   "Parse multipart/mixed if in the correct format"
-  [request encoding]
+  [request]
   (if (mixed-multipart? request)
-    (parse-request request encoding)
+    (parse-request request)
     {:info "Request not multipart/mixed"}))
 
 (defn wrap-multipart-mixed
-  "Places an additional key of :multiparts into the request map that contains the following maps:
-     :binary - seq binary parts {:content-type 'image/jpeg' :stream 'inputstream'}
-     :meta   - seq of parts in format application/json, application/xml or text/plain
-     :count  - total number of parts found
-  TODO - not actually using encoding atm..."
-  [handler & [opts]]
-  (fn [request]
-    (let [encoding (or (:encoding opts)
-                       (:character-encoding request)
-                       "UTF-8")
-          parts    (parse-multipart-mixed request encoding)
-          request  (merge request {:multiparts parts})]
-      (handler request))))
+  "Places an additional key of :multiparts into the request map.
+   Multiparts contains a map of content type to seq of part. Each
+   part is a stream of the data from that part.
+
+   Map also contains a key of :count with the total number of parts."
+  [handler]
+  (fn [req]
+    (let [parts    (parse-multipart-mixed req)
+          mult-req (merge req {:multiparts parts})]
+      (handler mult-req))))
