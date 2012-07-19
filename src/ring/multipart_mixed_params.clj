@@ -17,15 +17,11 @@
          (lazy-seq (cons {(.getContentType part) (.getInputStream part)}
                    (parts-sequence multipart (inc n))))))))
 
-(defn- to-streams
-  ([parts] (to-streams parts {}))
-  ([parts streams]
-     (do
-       (merge-with concat
-                   streams
-                   {(.getContentType (first parts)) (.getInputStream (first parts))}
-                   (when-not (empty? (rest parts))
-                     (to-streams (rest parts) streams))))))
+(defn- merge-two [a [k v]]
+  (update-in a [k] conj v))
+
+(defn- merge-matches [list]
+  (reduce #(reduce merge-two % %2) {} list))
 
 (defn- parse-request
   "Parse a mutlipart/mixed request"
@@ -33,8 +29,9 @@
   (let [multipart  (MimeMultipart.
                     (ByteArrayDataSource.
                      (:body request) "multipart/mixed"))
-        s4         (merge-with concat (parts-sequence multipart))]
-    (do (prn s4) s4)))
+        seq        (parts-sequence multipart)
+        merged     (merge-matches seq)]
+    merged))
 
 (defn- parse-multipart-mixed
   "Parse multipart/mixed if in the correct format"
