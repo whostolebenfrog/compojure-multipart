@@ -21,7 +21,7 @@
   (update-in a [k] conj v))
 
 (defn- merge-matches [list]
-  (reduce #(reduce merge-two % %2) {} list))
+  (reduce #(merge-two % (flatten (seq %2))) {} list))
 
 (defn- parse-request
   "Parse a mutlipart/mixed request"
