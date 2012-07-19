@@ -15,7 +15,7 @@
 (deftemplate added "pages/added.html" [])
 
 (defn upload-file [stream]
-  (copy stream "test.jpg"))
+  (copy stream (file "test.jpg")))
 
 (defroutes main-routes
   (GET "/" [] (render (upload-page)))
