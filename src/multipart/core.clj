@@ -22,10 +22,7 @@
   (GET "/" [] (render (upload-page)))
   (mm/wrap-multipart-mixed
    (POST "/data" req
-         (prn req)
-         (prn (first (:multiparts req)))
-         (prn (get (first (:multiparts req)) "image/jpeg"))
-         (upload-file (first (get (first (:multiparts req)) "image/jpeg")))
+         #_(upload-file (first (get (first (:multiparts req)) "image/jpeg")))
          (render (added)))))
 
 (def app
