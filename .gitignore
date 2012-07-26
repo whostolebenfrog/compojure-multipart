@@ -2,3 +2,4 @@
 .lein*
 lib/*
 target/*
+pom*
