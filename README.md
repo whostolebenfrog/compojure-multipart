@@ -1,12 +1,37 @@
-Example of uploading a multipart message using compojure / ring middleware.
+# Ring / compojure middleware providing support for parsing multipart/mixed mime types into the request map #
 
-Run with lein ring server
+A clojure multipart/mixed parser
 
-Requires lein 2.x
+# Add to your project #
 
-Makes use of ring wrap-multipart-params middleware to bind multipart params into a map for us.
+Add `[com.floatbackwards/multipart "0.0.1"]` to your project.clj
 
-Still very rough - just got it working
+Available on clojars: [multipart](https://clojars.org/com.floatbackwards/multipart)
 
-TODO: decompose better onto the request map,
-      can we autobind the maps values to keywords?
+# Use with #
+
+    (:require (ring [multipart-mixed-params :as mm])))
+
+then
+
+    (defroutes main-routes
+      (mm/wrap-multipart-mixed
+       (POST "/data" req "OK")))
+
+or 
+
+    (def app
+      (handler/site
+       mm/wrap-multipart-mixed
+       main-routes))
+
+
+# Building #
+
+`lein jar`
+
+# Author #
+
+Benjamin Griffiths (whostolebenfrog)
+
+Inspiration from [multipart-params](https://github.com/mmcgrana/ring/blob/master/ring-core/src/ring/middleware/multipart_params.clj)
