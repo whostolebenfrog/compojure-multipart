@@ -1,6 +1,6 @@
-# Ring / compojure middleware providing support for parsing multipart/mixed mime types into the request map #
+# Ring middleware for multipart/mixed #
 
-A clojure multipart/mixed parser
+Clojure ring / compojure middleware that knows how to parse a multipart/mixed mime type message into the request map.
 
 # Add to your project #
 
