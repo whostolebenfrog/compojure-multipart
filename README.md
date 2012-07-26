@@ -25,16 +25,18 @@ or
        wrap-multipart-mixed
        main-routes))
 
-If the request body contains a message with the content type of `multipart/mixed` This will put a key of `:multiparts` into the request map. Otherwise does nothing.
+If the request `content-type` header contains the content type of `multipart/mixed` this will put a key of `:multiparts` into the request map. Otherwise does nothing.
 
 This key will contain a map of content type to seq of streams for each part of the message with that type.
 
 For example a message containing three parts: 2 jpeg images and 1 text/plan would give us the following request map.
 
-    {... 
+    {
+    :body "some multipart/mixed message body - this is what we parse"
+    ... 
       :multiparts {
-        "image/jpeg"       : (<stream1>, <stream2>),
-        "application/json" : (<stream1>)
+        "image/jpeg" : (<stream1> <stream2>),
+        "text/plain" : (<stream1>)
       }
     ...}
 
