@@ -46,6 +46,10 @@ Each of the parsed elements is available as a stream that can be split, slurped 
 
 `lein jar`
 
+# Testing #
+
+lein midje
+
 # Author #
 
 Benjamin Griffiths (whostolebenfrog)
