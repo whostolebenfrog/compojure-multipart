@@ -14,8 +14,7 @@ Available on clojars: [multipart](https://clojars.org/com.floatbackwards/multipa
 
 then
 
-    (defroutes main-routes
-      (wrap-multipart-mixed
+    (defroutes main-routes (wrap-multipart-mixed
        (POST "/data" req "OK")))
 
 or 
@@ -48,7 +47,7 @@ Each of the parsed elements is available as a stream that can be split, slurped 
 
 # Testing #
 
-lein midje
+`lein midje`
 
 # Author #
 
