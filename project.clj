@@ -2,4 +2,6 @@
   :description "Ring middleware for parsing multipart/mixed requests"
   :url "https://github.com/whostolebenfrog/compojure-multipart"
   :dependencies [[org.clojure/clojure "1.4.0"]
-                 [org.apache.commons/commons-email "1.2"]])
+                 [midje "1.4.0"]
+                 [org.apache.commons/commons-email "1.2"]]
+  :profiles {:dev {:plugins [[lein-midje "2.0.0-SNAPSHOT"]]}})

@@ -2,7 +2,7 @@
   (:import [javax.mail.internet MimeMultipart]
            [org.apache.commons.mail ByteArrayDataSource]))
 
-(defn- mixed-multipart?
+(defn mixed-multipart?
   "Is this a multipart/mixed request?"
   [request]
   (if-let [content-type (:content-type request)]
@@ -33,7 +33,7 @@
         merged     (merge-matches seq)]
     merged))
 
-(defn- parse-multipart-mixed
+(defn parse-multipart-mixed
   "Parse multipart/mixed if in the correct format"
   [request]
   (if (mixed-multipart? request)

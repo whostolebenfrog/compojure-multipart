@@ -1,0 +1,6 @@
+Content-type: multipart/mixed; boundary="simple boundary"
+--simple boundary
+Content-type: text/plain
+
+single part
+--simple boundary--
