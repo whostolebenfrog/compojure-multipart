@@ -38,7 +38,7 @@
   [request]
   (if (mixed-multipart? request)
     (parse-request request)
-    {:info "Request not multipart/mixed"}))
+    {}))
 
 (defn wrap-multipart-mixed
   "Places an additional key of :multiparts into the request map.

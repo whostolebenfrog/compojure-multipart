@@ -36,5 +36,5 @@
         (gif? (get-part 0 "image/gif" parts)) => truthy))
 
 (fact "Non-multipart shows info message"
-      (:info (parse-multipart-mixed {:content-type "none"}))
-      => "Request not multipart/mixed")
+      (parse-multipart-mixed {:content-type "none"})
+      => {})
