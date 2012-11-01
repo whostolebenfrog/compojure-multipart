@@ -41,5 +41,6 @@
       => {})
 
 (fact "Input size is limited"
-      (get-plain 0 (parse-multipart-mixed (multipart "single.part") 1))
-      => (throws IOException))
+      (let [function (wrap-multipart-mixed (fn [req] nil) 100)]
+        (function (multipart "single.part"))
+        => (throws IOException)))
