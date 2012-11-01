@@ -1,15 +1,16 @@
 (ns multipart.unit
-  (:use [clojure.java.io :only [copy file]])
+  (:use [clojure.java.io :only [copy file input-stream]])
   (:use [ring.multipart-mixed-params])
   (:use [midje.sweet])
   (:import [javax.mail.internet MimeMultipart]
+           [java.io IOException]
            [org.apache.commons.mail ByteArrayDataSource]))
 
 ;; helper methods
 
 (defn multipart
   [path]
-  {:body         (slurp (format "test/multipart/resources/%s" path))
+  {:body      (input-stream (file (format "test/multipart/resources/%s" path) )) ; (slurp (format "test/multipart/resources/%s" path))
    :content-type "multipart/mixed"})
 
 (defn get-part [n type req]
@@ -38,3 +39,7 @@
 (fact "Non-multipart shows info message"
       (parse-multipart-mixed {:content-type "none"})
       => {})
+
+(fact "Input size is limited"
+      (get-plain 0 (parse-multipart-mixed (multipart "single.part") 1))
+      => (throws IOException))
