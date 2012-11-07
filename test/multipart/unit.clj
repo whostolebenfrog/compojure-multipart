@@ -10,7 +10,7 @@
 
 (defn multipart
   [path]
-  {:body      (input-stream (file (format "test/multipart/resources/%s" path) )) ; (slurp (format "test/multipart/resources/%s" path))
+  {:body      (input-stream (file (format "test/multipart/resources/%s" path)))
    :content-type "multipart/mixed"})
 
 (defn get-part [n type req]
@@ -28,7 +28,6 @@
 (fact "Can parse multipart with single part"
       (get-plain 0 (parse-multipart-mixed (multipart "single.part")))
       => "single part")
-
 
 (fact "Many parts gives sequences of parts in map"
       (let [parts (parse-multipart-mixed (multipart "multi.part"))]
