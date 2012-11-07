@@ -42,4 +42,4 @@
 (fact "Input size is limited"
       (let [function (wrap-multipart-mixed (fn [req] nil) 100)]
         (function (multipart "single.part"))
-        => (throws IOException)))
+        => (contains {:status 413})))
