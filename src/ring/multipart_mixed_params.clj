@@ -4,6 +4,7 @@
            [org.apache.commons.fileupload.util LimitedInputStream]
            [org.apache.commons.mail ByteArrayDataSource]))
 
+
 (defn mixed-multipart?
   "Is this a multipart/mixed request?"
   [request]
@@ -27,22 +28,21 @@
 
 (defn- parse-request
   "Parse a mutlipart/mixed request"
-  ([request]
-     (let [multipart  (MimeMultipart.
+  [request & [limit]]
+  (if limit
+    (let [multipart  (MimeMultipart.
                       (ByteArrayDataSource.
-                       (:body request)
-                       "multipart/mixed"))
-          seq        (parts-sequence multipart)
-          merged     (merge-matches seq)]
-      merged))
-
-  ([request limit]
-     (let [multipart  (MimeMultipart.
-                       (ByteArrayDataSource.
                        (proxy [LimitedInputStream] [(:body request) limit]
                          (raiseError [max-size count]
                            (throw (IOException.
                                    (format "The body exceeds its maximum permitted size of %s bytes" max-size)))))
+                       "multipart/mixed"))
+          seq        (parts-sequence multipart)
+          merged     (merge-matches seq)]
+      merged)
+    (let [multipart  (MimeMultipart.
+                      (ByteArrayDataSource.
+                       (:body request)
                        "multipart/mixed"))
           seq        (parts-sequence multipart)
           merged     (merge-matches seq)]
