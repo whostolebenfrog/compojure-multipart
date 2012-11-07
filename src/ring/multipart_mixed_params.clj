@@ -63,6 +63,9 @@
    Map also contains a key of :count with the total number of parts."
   [handler & [limit]]
   (fn [req]
-    (let [parts    (parse-multipart-mixed req limit)
-          mult-req (merge req {:multiparts parts})]
-      (handler mult-req))))
+    (try
+      (let [parts    (parse-multipart-mixed req limit)
+            mult-req (merge req {:multiparts parts})]
+        (handler mult-req))
+      (catch IOException e
+        {:status 413 :body (.getMessage e)}))))
