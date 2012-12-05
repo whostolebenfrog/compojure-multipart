@@ -26,34 +26,29 @@
 (defn- merge-matches [list]
   (reduce #(merge-two % (flatten (seq %2))) {} list))
 
+(defn- input-stream [request & [limit]]
+  "Returns either the input stream of a size limited input stream if limit is set"
+  (if limit
+    (proxy [LimitedInputStream] [(:body request) limit]
+      (raiseError [max-size count]
+        (throw (IOException.
+                (format "The body exceeds its maximum permitted size of %s bytes" max-size)))))
+    (:body request)))
+
 (defn- parse-request
   "Parse a mutlipart/mixed request"
   [request & [limit]]
-  (if limit
-    (let [multipart  (MimeMultipart.
-                      (ByteArrayDataSource.
-                       (proxy [LimitedInputStream] [(:body request) limit]
-                         (raiseError [max-size count]
-                           (throw (IOException.
-                                   (format "The body exceeds its maximum permitted size of %s bytes" max-size)))))
-                       "multipart/mixed"))
-          seq        (parts-sequence multipart)
-          merged     (merge-matches seq)]
-      merged)
-    (let [multipart  (MimeMultipart.
-                      (ByteArrayDataSource.
-                       (:body request)
-                       "multipart/mixed"))
-          seq        (parts-sequence multipart)
-          merged     (merge-matches seq)]
-      merged)))
+  (let [multipart  (MimeMultipart. (ByteArrayDataSource. (input-stream request limit)
+                                                         "multipart/mixed"))]
+    (if (.isComplete multipart)
+      (merge-matches (parts-sequence multipart))
+      (throw (javax.mail.MessagingException. "Incomplete request received")))))
 
 (defn parse-multipart-mixed
   "Parse multipart/mixed if in the correct format"
   [request & [limit]]
   (if (mixed-multipart? request)
-    (parse-request request limit)
-    {}))
+    (parse-request request limit) {}))
 
 (defn wrap-multipart-mixed
   "Places an additional key of :multiparts into the request map.

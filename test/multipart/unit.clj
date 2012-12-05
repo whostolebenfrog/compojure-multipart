@@ -43,3 +43,6 @@
       (let [function (wrap-multipart-mixed (fn [req] nil) 100)]
         (function (multipart "single.part"))
         => (contains {:status 413})))
+
+(fact "Final boundary is required"
+      (parse-multipart-mixed (multipart "multi-missing-final-boundary.part")) => (throws javax.mail.MessagingException))
