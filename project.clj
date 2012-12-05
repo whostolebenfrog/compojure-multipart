@@ -1,4 +1,4 @@
-(defproject com.floatbackwards/multipart "0.0.4"
+(defproject com.floatbackwards/multipart "0.0.5"
   :description "Ring middleware for parsing multipart/mixed requests"
   :url "https://github.com/whostolebenfrog/compojure-multipart"
   :dependencies [[org.clojure/clojure "1.4.0"]
