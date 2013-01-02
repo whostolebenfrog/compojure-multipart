@@ -1,4 +1,5 @@
 (ns ring.multipart-mixed-params
+
   (:import [javax.mail.internet MimeMultipart]
            [java.io IOException]
            [org.apache.commons.fileupload.util LimitedInputStream]
@@ -31,7 +32,7 @@
   (if limit
     (proxy [LimitedInputStream] [(:body request) limit]
       (raiseError [max-size count]
-        (throw (IOException.
+        (throw (ring.TooMuchContent.
                 (format "The body exceeds its maximum permitted size of %s bytes" max-size)))))
     (:body request)))
 
@@ -62,5 +63,5 @@
       (let [parts    (parse-multipart-mixed req limit)
             mult-req (merge req {:multiparts parts})]
         (handler mult-req))
-      (catch IOException e
+      (catch ring.TooMuchContent e
         {:status 413 :body (.getMessage e)}))))

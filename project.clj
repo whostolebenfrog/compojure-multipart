@@ -5,4 +5,6 @@
                  [midje "1.4.0"]
                  [org.apache.commons/commons-email "1.2"]
                  [commons-fileupload/commons-fileupload "1.2.2"]]
-  :profiles {:dev {:plugins [[lein-midje "2.0.0-SNAPSHOT"]]}})
+  :profiles {:dev {:plugins [[lein-midje "2.0.0-SNAPSHOT"]]}}
+
+  :aot [ring.TooMuchContent])
