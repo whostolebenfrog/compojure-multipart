@@ -4,7 +4,7 @@ Clojure ring / compojure middleware that knows how to parse a multipart/mixed mi
 
 # Add to your project #
 
-Add `[com.floatbackwards/multipart "0.0.1"]` to your project.clj
+Add `[com.floatbackwards/multipart "0.0.6"]` to your project.clj
 
 Available on clojars: [multipart](https://clojars.org/com.floatbackwards/multipart)
 
