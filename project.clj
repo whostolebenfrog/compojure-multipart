@@ -7,7 +7,9 @@
                  [midje "1.6.3"]
                  [org.apache.commons/commons-email "1.3.3"]
                  [commons-fileupload/commons-fileupload "1.3.1"]]
-  :profiles {:dev {:plugins [[lein-midje "3.1.3"]]}}
+
+  :profiles {:dev {:plugins [[lein-midje "3.1.3"]
+                             [lein-release "1.0.5"]]}}
 
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
