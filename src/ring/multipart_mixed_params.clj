@@ -1,7 +1,7 @@
 (ns ring.multipart-mixed-params
 
   (:import [javax.mail.internet MimeMultipart]
-           [java.io IOException]
+           [java.io IOException InputStream]
            [org.apache.commons.fileupload.util LimitedInputStream]
            [org.apache.commons.mail ByteArrayDataSource]))
 
@@ -9,15 +9,15 @@
 (defn mixed-multipart?
   "Is this a multipart/mixed request?"
   [request]
-  (if-let [content-type (:content-type request)]
+  (if-let [^String content-type (:content-type request)]
     (.startsWith content-type "multipart/mixed")))
 
 (defn- parts-sequence
   "Returns a lazy sequence of the parts from a MimeMultipart request"
   ([multipart] (parts-sequence multipart 0))
-  ([multipart n]
+  ([^MimeMultipart multipart n]
      (if (< n (.getCount multipart))
-       (let [part (.getBodyPart multipart n)]
+       (let [part (.getBodyPart multipart ^int n)]
          (lazy-seq (cons {(.getContentType part) (.getInputStream part)}
                    (parts-sequence multipart (inc n))))))))
 
@@ -27,7 +27,7 @@
 (defn- merge-matches [list]
   (reduce #(merge-two % (flatten (seq %2))) {} list))
 
-(defn- input-stream [request & [limit]]
+(defn- ^InputStream input-stream [request & [limit]]
   "Returns either the input stream of a size limited input stream if limit is set"
   (if limit
     (proxy [LimitedInputStream] [(:body request) limit]
