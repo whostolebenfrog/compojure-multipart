@@ -1,4 +1,4 @@
-(defproject com.floatbackwards/multipart "0.0.9-SNAPSHOT"
+(defproject com.floatbackwards/multipart "0.0.9"
   :description "Ring middleware for parsing multipart/mixed requests"
 
   :url "https://github.com/whostolebenfrog/compojure-multipart"
