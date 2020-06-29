@@ -32,7 +32,7 @@
   "Parse a mutlipart/mixed request"
   [request & [limit]]
   (let [multipart  (MimeMultipart. (ByteArrayDataSource. (input-stream request limit)
-                                                         "multipart/mixed"))]
+                                                         (:content-type request)))]
     (if (.isComplete multipart)
       (apply merge-with concat (parts-sequence multipart))
       (throw (javax.mail.MessagingException. "Incomplete request received")))))

@@ -1,0 +1,9 @@
+Content-type: multipart/mixed; boundary="vdowbVAIccYaqDmTfl5KKWvVIYXd2fXYJHu7J--"
+--vdowbVAIccYaqDmTfl5KKWvVIYXd2fXYJHu7J--
+Content-Disposition: form-data; name="foo"
+Content-Type: application/json; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+{}
+
+--vdowbVAIccYaqDmTfl5KKWvVIYXd2fXYJHu7J----
