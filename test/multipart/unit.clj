@@ -5,8 +5,11 @@
 
 (defn multipart
   [path]
-  {:body (io/input-stream (io/file (format "test/multipart/resources/%s" path)))
-   :content-type "multipart/mixed"})
+  (let [f (io/file (format "test/multipart/resources/%s" path))]
+    {:body (io/input-stream f)
+     :content-type (-> (re-seq #"^(?i)content-type: (.+)" (slurp f))
+                     first
+                     second)}))
 
 (defn get-part [n type req]
   (slurp (nth (req type) n)))
@@ -41,4 +44,11 @@
          => (contains {:status 413})))
 
  (fact "Final boundary is required"
-       (parse-multipart-mixed (multipart "multi-missing-final-boundary.part")) => (throws javax.mail.MessagingException)))
+       (parse-multipart-mixed (multipart "multi-missing-final-boundary.part")) => (throws javax.mail.MessagingException))
+
+ (fact "Trailing dash in boundary should parse correctly"
+       (get-part 0
+                 "application/json; charset=UTF-8"
+                 (parse-multipart-mixed
+                     (multipart "single-with-trailing-boundary-dash.part")))
+       => "{}\n"))
